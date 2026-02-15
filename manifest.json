@@ -1,0 +1,43 @@
+{
+  "manifest_version": 3,
+  "name": "AnkiBefore",
+  "version": "1.0.0",
+  "description": "Anki 복습 카드가 남아있으면 브라우저 사용을 차단합니다.",
+  "permissions": [
+    "alarms",
+    "storage",
+    "declarativeNetRequest",
+    "declarativeNetRequestFeedback",
+    "webNavigation",
+    "tabs"
+  ],
+  "host_permissions": [
+    "http://localhost:8765/*",
+    "http://127.0.0.1:8765/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "chrome_url_overrides": {
+    "newtab": "blocked.html"
+  },
+  "options_page": "options.html",
+  "web_accessible_resources": [
+    {
+      "resources": ["blocked.html", "blocked.css", "blocked.js"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  }
+}
