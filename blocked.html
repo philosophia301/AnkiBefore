@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AnkiBefore</title>
+  <link rel="stylesheet" href="blocked.css">
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1 id="title">Anki 복습을 먼저 완료하세요</h1>
+      <p id="subtitle" class="subtitle"></p>
+
+      <div id="stats" class="stats">
+        <div class="stat-item">
+          <span class="stat-value" id="newCount">0</span>
+          <span class="stat-label">New</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value" id="learnCount">0</span>
+          <span class="stat-label">Learning</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value" id="reviewCount">0</span>
+          <span class="stat-label">Review</span>
+        </div>
+      </div>
+
+      <div class="total" id="totalSection">
+        총 <strong id="totalCount">0</strong>장 남음
+      </div>
+
+      <button id="checkNow" class="btn">바로 확인하기</button>
+
+      <div class="footer">
+        <p id="countdown"></p>
+        <p id="lastCheck"></p>
+      </div>
+    </div>
+  </div>
+  <script src="blocked.js"></script>
+</body>
+</html>
