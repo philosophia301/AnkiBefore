@@ -11,18 +11,8 @@ Anki 복습 카드가 남아있으면 브라우저 사용을 차단하는 Chrome
 
 ## 설치
 
-### 1. Chrome Extension
-
 1. `chrome://extensions` → 개발자 모드 활성화
 2. "압축해제된 확장 프로그램을 로드합니다" → 이 폴더 선택
-
-### 2. Native Messaging Host (Anki 열기 기능)
-
-```bash
-./install_native.sh
-```
-
-실행 시 `chrome://extensions`에서 확인한 Extension ID를 입력합니다.
 
 ## 요구사항
 
@@ -37,6 +27,5 @@ Anki 복습 카드가 남아있으면 브라우저 사용을 차단하는 Chrome
 ├── background.js          # Service Worker (폴링, 차단 규칙)
 ├── blocked.html/js/css    # 차단 페이지
 ├── options.html/js/css    # 설정 페이지 (덱 선택)
-├── native/open_anki.sh    # Native Messaging Host
-└── install_native.sh      # Host 설치 스크립트
+└── icons/                 # 확장 아이콘
 ```
