@@ -9,8 +9,7 @@
     "declarativeNetRequest",
     "declarativeNetRequestFeedback",
     "webNavigation",
-    "tabs",
-    "nativeMessaging"
+    "tabs"
   ],
   "host_permissions": [
     "http://localhost:8765/*",

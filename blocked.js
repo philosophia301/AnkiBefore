@@ -11,15 +11,14 @@ function renderState(state) {
   const newCount = document.getElementById("newCount");
   const learnCount = document.getElementById("learnCount");
   const reviewCount = document.getElementById("reviewCount");
-  const actions = document.querySelector(".actions");
-  const openAnki = document.getElementById("openAnki");
+  const checkNow = document.getElementById("checkNow");
 
   if (!state) {
     title.textContent = "상태를 확인하는 중...";
     subtitle.textContent = "";
     stats.classList.add("hidden");
     totalSection.classList.add("hidden");
-    actions.classList.add("hidden");
+    checkNow.classList.add("hidden");
     return;
   }
 
@@ -28,15 +27,13 @@ function renderState(state) {
     subtitle.textContent = "Anki Desktop과 AnkiConnect가 실행 중이어야 합니다.";
     stats.classList.add("hidden");
     totalSection.classList.add("hidden");
-    actions.classList.remove("hidden");
-    openAnki.classList.add("hidden");
+    checkNow.classList.remove("hidden");
   } else if (state.status === "due") {
     title.textContent = "Anki 복습을 먼저 완료하세요";
     subtitle.textContent = "복습을 마치면 브라우저를 사용할 수 있습니다.";
     stats.classList.remove("hidden");
     totalSection.classList.remove("hidden");
-    actions.classList.remove("hidden");
-    openAnki.classList.remove("hidden");
+    checkNow.classList.remove("hidden");
     newCount.textContent = state.newCount;
     learnCount.textContent = state.learnCount;
     reviewCount.textContent = state.reviewCount;
@@ -46,13 +43,13 @@ function renderState(state) {
     subtitle.textContent = "브라우저를 자유롭게 사용하세요.";
     stats.classList.add("hidden");
     totalSection.classList.add("hidden");
-    actions.classList.add("hidden");
+    checkNow.classList.add("hidden");
   } else {
     title.textContent = "상태를 확인하는 중...";
     subtitle.textContent = "";
     stats.classList.add("hidden");
     totalSection.classList.add("hidden");
-    actions.classList.add("hidden");
+    checkNow.classList.add("hidden");
   }
 
   updateLastCheck(state.lastCheck);
@@ -102,13 +99,6 @@ chrome.storage.onChanged.addListener((changes) => {
     renderState(state);
     startCountdown(state?.lastCheck);
   }
-});
-
-document.getElementById("openAnki").addEventListener("click", async () => {
-  const btn = document.getElementById("openAnki");
-  btn.disabled = true;
-  await chrome.runtime.sendMessage({ action: "openAnki" });
-  btn.disabled = false;
 });
 
 document.getElementById("checkNow").addEventListener("click", async () => {

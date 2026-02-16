@@ -240,16 +240,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     checkAnki().then(() => sendResponse({ ok: true }));
     return true;
   }
-  if (message.action === "openAnki") {
-    chrome.runtime.sendNativeMessage(
-      "com.ankibefore.open_anki",
-      { action: "open" },
-      (response) => {
-        sendResponse({ ok: !chrome.runtime.lastError });
-      }
-    );
-    return true;
-  }
 });
 
 // 탭 닫히면 저장된 URL 정리
