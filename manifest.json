@@ -7,7 +7,6 @@
     "alarms",
     "storage",
     "declarativeNetRequest",
-    "declarativeNetRequestFeedback",
     "webNavigation",
     "tabs"
   ],
