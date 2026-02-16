@@ -149,26 +149,63 @@ async function setBlocking(enable) {
         removeRuleIds: existingIds,
       });
     }
+    await restoreTabs();
   }
 }
 
+// tabId -> originalUrl 매핑 (메모리)
+const savedUrls = new Map();
+
 async function redirectExistingTabs(redirectUrl) {
   const tabs = await chrome.tabs.query({});
-  const extensionOrigin = chrome.runtime.getURL("");
 
   for (const tab of tabs) {
     if (
       tab.url &&
-      !tab.url.startsWith(extensionOrigin) &&
       !tab.url.startsWith("chrome://") &&
       !tab.url.startsWith("chrome-extension://") &&
       !tab.url.startsWith("about:") &&
       !tab.url.includes("localhost:8765") &&
       !tab.url.includes("127.0.0.1:8765")
     ) {
+      savedUrls.set(tab.id, tab.url);
       chrome.tabs.update(tab.id, { url: redirectUrl });
     }
   }
+
+  // 디스크에도 저장 (서비스 워커 재시작 대비)
+  await chrome.storage.local.set({
+    savedTabUrls: Object.fromEntries(savedUrls),
+  });
+}
+
+async function restoreTabs() {
+  // 메모리에 없으면 디스크에서 복원
+  if (savedUrls.size === 0) {
+    const { savedTabUrls } = await chrome.storage.local.get(["savedTabUrls"]);
+    if (savedTabUrls) {
+      for (const [id, url] of Object.entries(savedTabUrls)) {
+        savedUrls.set(Number(id), url);
+      }
+    }
+  }
+
+  if (savedUrls.size === 0) return;
+
+  const blockedUrl = chrome.runtime.getURL("blocked.html");
+  const tabs = await chrome.tabs.query({});
+
+  for (const tab of tabs) {
+    if (tab.url && tab.url.startsWith(blockedUrl)) {
+      const originalUrl = savedUrls.get(tab.id);
+      if (originalUrl) {
+        chrome.tabs.update(tab.id, { url: originalUrl });
+      }
+    }
+  }
+
+  savedUrls.clear();
+  await chrome.storage.local.remove("savedTabUrls");
 }
 
 chrome.alarms.onAlarm.addListener((alarm) => {
@@ -205,6 +242,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 });
 
+// 탭 닫히면 저장된 URL 정리
+chrome.tabs.onRemoved.addListener((tabId) => {
+  savedUrls.delete(tabId);
+});
+
 // 페이지 이동 시 저장된 상태 기반으로 즉시 차단
 chrome.webNavigation.onBeforeNavigate.addListener(async (details) => {
   if (details.frameId !== 0) return;
@@ -222,6 +264,12 @@ chrome.webNavigation.onBeforeNavigate.addListener(async (details) => {
 
   const { ankiState } = await chrome.storage.local.get(["ankiState"]);
   if (!ankiState || ankiState.status !== "done") {
+    if (!savedUrls.has(details.tabId)) {
+      savedUrls.set(details.tabId, url);
+      chrome.storage.local.set({
+        savedTabUrls: Object.fromEntries(savedUrls),
+      });
+    }
     const redirectUrl = chrome.runtime.getURL("blocked.html");
     chrome.tabs.update(details.tabId, { url: redirectUrl });
   }
