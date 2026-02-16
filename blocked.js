@@ -109,7 +109,7 @@ document.getElementById("checkNow").addEventListener("click", async () => {
     await chrome.runtime.sendMessage({ action: "checkNow" });
   } finally {
     btn.disabled = false;
-    btn.textContent = "바로 확인하기";
+    btn.textContent = "복습 확인하기";
   }
 });
 
